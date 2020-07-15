@@ -1,6 +1,6 @@
 class TicTacToe:
-    def __init__(self, curr_state):
-        self.curr_state: str = curr_state
+    def __init__(self, curr_state: str):
+        self.curr_state: list = [[curr_state[i + j] for j in range(6, -1, -3)] for i in range(0, 3)]
         self.win_count: int = 0
         self.winner: str = ""
         self.is_possible: bool = True
@@ -73,39 +73,60 @@ class TicTacToe:
         print("---------")
 
     def print_curr_state(self):
+        self.print_border()
+
         curr_row = 1
         curr_symbol = 0
-        for elem in self.curr_state:
-            curr_symbol += 1
-            if curr_symbol % 3 == 0:
-                print(elem + " ", end="")
-                print("|")
-                curr_row += 1
-            elif (curr_symbol - 1) % 3 == 0:
-                print("| ", end="")
-            if curr_symbol % 3 > 0:
-                print(elem + " ", end="")
+        for j in range(2, -1, -1):
+            for i in range(0, 3):
+                elem = self.curr_state[i][j]
+                curr_symbol += 1
+                if curr_symbol % 3 == 0:
+                    print(elem + " ", end="")
+                    print("|")
+                    curr_row += 1
+                elif (curr_symbol - 1) % 3 == 0:
+                    print("| ", end="")
+                if curr_symbol % 3 > 0:
+                    print(elem + " ", end="")
+
+        self.print_border()
+
+    def player_move(self):
+        correct_inp: bool = False
+        while not correct_inp:
+            coord: list = input("Enter the coordinates: > ").split()
+            if len(coord) < 2 or not (coord[0].isdigit() and coord[1].isdigit()):
+                print("You should enter numbers!")
+            elif int(coord[0]) > 3 or int(coord[1]) > 3:
+                print("Coordinates should be from 1 to 3!")
+            elif self.curr_state[int(coord[0]) - 1][int(coord[1]) - 1] != "_":
+                print("This cell is occupied! Choose another one!")
+            else:  # always is correct
+                self.curr_state[int(coord[0]) - 1][int(coord[1]) - 1] = "X"
+                correct_inp = True
 
     def start(self):
+        print(self)
         self.game_status = True
-        self.print_border()
         self.print_curr_state()
-        self.print_border()
-        self.check_win()
-        self.check_possible()
-        self.check_draw()
-        if self.is_possible:
-            if self.is_draw and self.win_count == 0:
-                print("Draw")
-                self.game_status = False
-            elif not self.is_draw and self.win_count == 0:
-                print("Game not finished")
-            else:
-                print(f"{self.winner} wins")
-                self.game_status = False
-        else:
-            print("Impossible")
-            self.game_status = False
+        self.player_move()
+        self.print_curr_state()
+        # self.check_win()
+        # self.check_possible()
+        # self.check_draw()
+        # if self.is_possible:
+        #     if self.is_draw and self.win_count == 0:
+        #         print("Draw")
+        #         self.game_status = False
+        #     elif not self.is_draw and self.win_count == 0:
+        #         print("Game not finished")
+        #     else:
+        #         print(f"{self.winner} wins")
+        #         self.game_status = False
+        # else:
+        #     print("Impossible")
+        #     self.game_status = False
 
 
 def main():
@@ -116,3 +137,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
